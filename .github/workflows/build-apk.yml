@@ -1,60 +1,72 @@
-name: Build Android APK Auto
+name: Build and Release APKs
 
 on:
   push:
     branches:
-      - main
-      - master
-  workflow_dispatch:
+      - main # ou 'master'
 
 jobs:
-  build:
+  build-and-release:
+    name: Build & Publish APKs
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      # 1. Baixa o histórico completo de tags (fetch-depth: 0 é essencial)
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          fetch-depth: 0
 
-      - name: Setup Java JDK 17
+      # 2. Calcula a próxima versão (ex: v1.0 -> v1.1)
+      - name: Calculate Next Version
+        id: versioning
+        run: |
+          # Busca a última tag que comece com 'v' (ex: v1.0)
+          LATEST_TAG=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "")
+
+          if [ -z "$LATEST_TAG" ]; then
+            # Se não existir nenhuma tag, começa na 1.0
+            NEW_VERSION="v1.0"
+          else
+            # Extrai o número major (1) e minor (0, 1, 2...)
+            VERSION_WITHOUT_V="${LATEST_TAG#v}"
+            MAJOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f1)
+            MINOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f2)
+
+            # Incrementa o minor em +1
+            NEW_MINOR=$((MINOR + 1))
+            NEW_VERSION="v${MAJOR}.${NEW_MINOR}"
+          fi
+
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Próxima versão: $NEW_VERSION"
+
+      # 3. Configura Java
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
-      - name: Install Cordova and Cordova-Res
-        run: |
-          npm install -g cordova cordova-res
+      # 4. Torna o gradlew executável
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew # Remova 'android/' se estiver na raiz
 
-      - name: Create Cordova Project & Configure Icon
+      # 5. Compila os APKs
+      - name: Build Android Release APK
         run: |
-          # Criar o projeto Cordova
-          npx cordova create android_app com.cati.emfuga "Princesa Cati em Fuga"
-          
-          # Copiar o jogo web para a pasta do app
-          mkdir -p build_output
-          cp -r * build_output/ || true
-          cp -r build_output/* android_app/www/
-          
-          cd android_app
-          
-          # Se existir icon.png na raiz, configura como ícone do app
-          if [ -f "../icon.png" ]; then
-            cp ../icon.png www/icon.png
-            # Adiciona a tag de ícone no config.xml
-            sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' config.xml
-          fi
-          
-          # Adiciona plataforma Android e compila
-          npx cordova platform add android
-          npx cordova build android --debug
+          cd android # Remova se estiver na raiz
+          ./gradlew assembleRelease
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+      # 6. Cria a nova Tag no repositório e publica a Release com os APKs
+      - name: Create Release & Upload APK
+        uses: softprops/action-gh-release@v2
         with:
-          name: princesa-cati-em-fuga-apk
-          path: android_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+          tag_name: ${{ steps.versioning.outputs.VERSION }}
+          name: Release ${{ steps.versioning.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            android/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
