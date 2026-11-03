@@ -1,4 +1,4 @@
-name: Build Android APK (Web-to-App)
+name: Build Android APK Auto
 
 on:
   push:
@@ -26,21 +26,30 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Bubblewrap CLI
-        run: npm install -g @bubblewrap/cli
-
-      - name: Generate Android Project & Build APK
+      - name: Install Cordova and Cordova-Res
         run: |
-          mkdir build_output
-          cp -r * build_output/ || true
-          
-          # Criar projeto Android via Bubblewrap
-          npx @bubblewrap/cli init --manifest=https://raw.githubusercontent.com/${{ github.repository }}/main/manifest.json || true
-          
-          # Compilar APK usando Cordova/Bubblewrap fallback
+          npm install -g cordova cordova-res
+
+      - name: Create Cordova Project & Configure Icon
+        run: |
+          # Criar o projeto Cordova
           npx cordova create android_app com.cati.emfuga "Princesa Cati em Fuga"
+          
+          # Copiar o jogo web para a pasta do app
+          mkdir -p build_output
+          cp -r * build_output/ || true
+          cp -r build_output/* android_app/www/
+          
           cd android_app
-          cp -r ../build_output/* www/
+          
+          # Se existir icon.png na raiz, configura como ícone do app
+          if [ -f "../icon.png" ]; then
+            cp ../icon.png www/icon.png
+            # Adiciona a tag de ícone no config.xml
+            sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' config.xml
+          fi
+          
+          # Adiciona plataforma Android e compila
           npx cordova platform add android
           npx cordova build android --debug
 
