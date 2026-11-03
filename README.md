@@ -37,11 +37,5 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 ## Como jogar
 Abra o `index.html` no navegador. Para ir direto a uma fase, adicione `#fase-5` ao endereço (troque o 5 pelo número da fase, de 1 a 20).
 
-## Publicar online (GitHub Pages)
-No repositório, vá em **Settings > Pages**, escolha **Deploy from a branch**, selecione `main` e a pasta `/ (root)`. Em alguns minutos o jogo estará em `https://nevesm5.github.io/NOME_DO_REPOSITORIO/`.
-
-## Gerar o APK para Android
-Veja [`android-app/LEIA-ME.md`](android-app/LEIA-ME.md).
-
 ---
 Uma criação **Nevesco** · by Marcos Neves
