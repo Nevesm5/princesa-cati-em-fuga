@@ -19,6 +19,7 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 ## Recursos
 - 6 mundos com 4 fases cada: Árvores, Deserto, Pântano (com fases aquáticas), Céus, Gelo e Lua
 - Introdução animada contando a história do sequestro das princesas
+- Abertura curta em cada mundo, com o cenário real e uma dica temática
 - Escolha entre Cati (vestido amarelo) e Isadora (vestido azul)
 - Dificuldade: Moleza, Normal e Difícil
 - Idiomas: Português, Inglês e Espanhol (escolha salva no aparelho)
