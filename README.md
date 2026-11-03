@@ -2,7 +2,8 @@
 
 Jogo de plataforma estilo Super Mario Bros, feito em um único arquivo HTML (canvas + JavaScript puro, sem dependências).
 
-▶️ **Jogar online:** `https://nevesm5.github.io/princesa-cati-em-fuga/` 
+▶️ **Jogar online:** `https://nevesm5.github.io/princesa-cati-em-fuga/`
+📱 **APK para Android:** veja as [Releases](https://github.com/Nevesm5/princesa-cati-em-fuga/releases) do repositório (build gerado pelo GitHub Actions).
 
 As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e levadas para um mundo perigoso. Juntas, elas precisam atravessar **6 mundos** — passando pelo congelante **Mundo do Gelo** — e derrotar o Molusco na Lua para voltar para casa.
 
@@ -18,19 +19,18 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 
 ## Recursos
 - 6 mundos com 4 fases cada: Árvores, Deserto, Pântano (com fases aquáticas), Céus, Gelo e Lua
-- Introdução animada contando a história do sequestro das princesas ao iniciar uma nova história
-- Abertura curta em cada mundo, com o cenário real e uma dica temática
-- Escolha entre Cati (vestido amarelo) e Isadora (vestido azul)
-- Dificuldade: Moleza, Normal e Difícil
+- Cada mundo tem cenário, inimigos e desafios próprios — inclusive buracos específicos e dicas temáticas
+- História de abertura ao iniciar uma **Nova história**, contando o sequestro das irmãs, com cenas animadas
+- Menu dinâmico com Cati ou Isadora, dificuldade, idioma e melhor resultado salvo
 - Idiomas: Português, Inglês e Espanhol (escolha salva no aparelho)
-- Chefes diferentes em cada mundo, com barra de vida e o Molusco como chefe final
-- Progresso salvo no aparelho, com opção de continuar do início da fase e do mundo onde parou
-- Menu com **Continuar** (mostrando a fase) ou **Nova história**, que sempre abre a introdução
-- Dinossauros com cores temáticas de cada mundo
+- Progresso salvo no aparelho, com opção de **Continuar** do início da fase e do mundo onde parou
+- Menu com **Continuar** (mostrando a fase) ou **Nova história**
 - Inimigos moluscos diferentes em cada mundo, com voadores próprios e sub-chefes
-- Chefes com ataques especiais de cada mundo, como flocos de neve no Gelo
-- Buracos com aparência e paisagem diferentes em cada mundo
+- Chefes de mundo com barra de vida e ataques próprios do mundo, como flocos de neve no Gelo e raio nos Céus
+- Dinossauros com cores temáticas de cada mundo
 - Blocos "?" com poderes: estrelas mágicas (cada princesa tem a sua) e uma montaria que engole inimigos
+- Gemas escondidas para coletar
+- Aberturas curtas em cada mundo, com o cenário real e uma dica temática
 - Músicas, efeitos sonoros, pausa e controles de toque para celular
 
 ## Controles
