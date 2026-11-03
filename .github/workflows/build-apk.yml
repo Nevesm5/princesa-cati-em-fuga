@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Baixa o histórico completo de tags
+      # 1. Baixa o repositório completo
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Calcula a próxima versão (v1.0 -> v1.1 -> v1.2)
+      # 2. Calcula a versão (v1.0, v1.1...)
       - name: Calculate Next Version
         id: versioning
         run: |
@@ -43,15 +43,25 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Torna o gradlew executável na raiz
+      # 4. Localiza o gradlew e concede permissão de execução
       - name: Make Gradle executable
-        run: chmod +x gradlew
+        run: |
+          GRADLEW_PATH=$(find . -name gradlew -type f | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "ERRO: O ficheiro gradlew não foi encontrado no repositório."
+            exit 1
+          fi
+          echo "gradlew encontrado em: $GRADLEW_PATH"
+          chmod +x "$GRADLEW_PATH"
+          echo "GRADLEW_DIR=$(dirname "$GRADLEW_PATH")" >> $GITHUB_ENV
 
-      # 5. Compila os APKs na raiz
+      # 5. Compila o APK de Release no diretório correto
       - name: Build Android Release APK
-        run: ./gradlew assembleRelease
+        run: |
+          cd ${{ env.GRADLEW_DIR }}
+          ./gradlew assembleRelease
 
-      # 6. Cria a Release e faz upload dos APKs gerados
+      # 6. Publica a Release no GitHub
       - name: Create Release & Upload APK
         uses: softprops/action-gh-release@v2
         with:
@@ -60,6 +70,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            app/build/outputs/apk/release/*.apk
+            **/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
