@@ -1,75 +1,56 @@
-name: Build and Release APKs
+name: Gerar APK e publicar Release
 
 on:
   push:
-    branches:
-      - main # ou 'master'
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build-and-release:
-    name: Build & Publish APKs
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Baixa o repositório completo
-      - name: Checkout Repository
+      - name: Baixar o código
         uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
+          node-version: 20
 
-      # 2. Calcula a versão (v1.0, v1.1...)
-      - name: Calculate Next Version
-        id: versioning
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "")
-
-          if [ -z "$LATEST_TAG" ]; then
-            NEW_VERSION="v1.0"
-          else
-            VERSION_WITHOUT_V="${LATEST_TAG#v}"
-            MAJOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f1)
-            MINOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f2)
-            NEW_MINOR=$((MINOR + 1))
-            NEW_VERSION="v${MAJOR}.${NEW_MINOR}"
-          fi
-
-          echo "VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "Próxima versão: $NEW_VERSION"
-
-      # 3. Configura o JDK 17
-      - name: Set up JDK 17
+      - name: Instalar Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: temurin
+          java-version: 21
 
-      # 4. Localiza o gradlew e concede permissão de execução
-      - name: Make Gradle executable
+      - name: Montar o projeto Android (Capacitor)
         run: |
-          GRADLEW_PATH=$(find . -name gradlew -type f | head -n 1)
-          if [ -z "$GRADLEW_PATH" ]; then
-            echo "ERRO: O ficheiro gradlew não foi encontrado no repositório."
-            exit 1
-          fi
-          echo "gradlew encontrado em: $GRADLEW_PATH"
-          chmod +x "$GRADLEW_PATH"
-          echo "GRADLEW_DIR=$(dirname "$GRADLEW_PATH")" >> $GITHUB_ENV
+          mkdir -p www
+          rsync -a \
+            --exclude='.git' --exclude='.github' --exclude='www' \
+            --exclude='node_modules' --exclude='android' \
+            ./ www/
+          npm init -y
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
+          npx cap init "Princesa Cati em Fuga" com.nevesco.cati --web-dir=www
+          npx cap add android
+          npx cap sync android
 
-      # 5. Compila o APK de Release no diretório correto
-      - name: Build Android Release APK
+      - name: Compilar o APK
+        working-directory: android
         run: |
-          cd ${{ env.GRADLEW_DIR }}
-          ./gradlew assembleRelease
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-      # 6. Publica a Release no GitHub
-      - name: Create Release & Upload APK
+      - name: Renomear o APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk PrincesaCati.apk
+
+      - name: Publicar nova Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.versioning.outputs.VERSION }}
-          name: Release ${{ steps.versioning.outputs.VERSION }}
-          draft: false
-          prerelease: false
-          files: |
-            **/build/outputs/apk/release/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ github.run_number }}
+          name: Versão ${{ github.run_number }}
+          files: PrincesaCati.apk
