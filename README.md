@@ -18,13 +18,15 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 
 ## Recursos
 - 6 mundos com 4 fases cada: Árvores, Deserto, Pântano (com fases aquáticas), Céus, Gelo e Lua
-- Introdução animada contando a história do sequestro das princesas
+- Introdução animada contando a história do sequestro das princesas ao iniciar uma nova história
 - Abertura curta em cada mundo, com o cenário real e uma dica temática
 - Escolha entre Cati (vestido amarelo) e Isadora (vestido azul)
 - Dificuldade: Moleza, Normal e Difícil
 - Idiomas: Português, Inglês e Espanhol (escolha salva no aparelho)
 - Chefes diferentes em cada mundo, com barra de vida e o Molusco como chefe final
-- Progresso salvo no aparelho, com opção de continuar de onde parou
+- Progresso salvo no aparelho, com opção de continuar do início da fase e do mundo onde parou
+- Menu com **Continuar** (mostrando a fase) ou **Nova história**, que sempre abre a introdução
+- Dinossauros com cores temáticas de cada mundo
 - Blocos "?" com poderes: estrelas mágicas (cada princesa tem a sua) e uma montaria que engole inimigos
 - Músicas, efeitos sonoros, pausa e controles de toque para celular
 

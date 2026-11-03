@@ -34,6 +34,7 @@ const WD=[
 {n:'Mundo dos Céus',sky:['#7fc8ff','#e9f6ff'],g:'#ffffff',d:'#dbeaff',b:'#ffd6e8',s:'#ff8fb8',h:'#ffe066',lv:4,gw:4,gp:.42},
 {n:'Mundo do Gelo',sky:['#bfe8ff','#f7fcff'],g:'#e6f5ff',d:'#a9cfe4',b:'#c9ecff',s:'#5aa9d6',h:'#8fe0ff',lv:4,gw:3,gp:.34},
 {n:'Mundo da Lua',sky:['#0b0b2e','#2a1a5e'],g:'#c9c9d6',d:'#8d8da6',b:'#b9bfd6',s:'#7de3c1',h:'#b388ff',lv:4,gw:5,gp:.38,low:1}];
+const DINO=['#7ad67a','#e6a05f','#6fb59a','#ffb3d1','#8fd8ff','#b9bfd6'];
 function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function gen(w,i){const D=WD[w],R=rng(w*97+i*13+5),r=(a,b)=>a+Math.floor(R()*(b-a+1));
  const last=w==5&&i==3,aq=!!(D.aq&&D.aq.includes(i)),mini=!aq&&!last&&i==D.lv-1,bo=last||mini,len=(aq?100:88)+w*6+i*10+(bo?14:0);
@@ -120,7 +121,7 @@ function upd(){tick++;
  if(p.x+p.w>hx+20&&p.x<hx+70){if(!boss){state='clear';jingle()}else{msg=tr('lock');msgT=2}}
  cam=Math.max(0,Math.min(L.len*T-W,p.x-W/2));if(msgT>0)msgT--}
 const TX={
-pt:{title:'Princesa Cati em Fuga',play:'Jogar',skip:'Pular',jmp:'Pular',d:['Moleza','Normal','Difícil'],
+pt:{title:'Princesa Cati em Fuga',play:'Jogar',newgame:'Nova história',skip:'Pular',jmp:'Pular',d:['Moleza','Normal','Difícil'],
 s:['No reino de Nevesco, Cati e Isadora viviam felizes no castelo, entre risos e brincadeiras.','Mas numa noite de tempestade, o cruel Molusco rompeu os portões e invadiu o castelo!','Ele levou as duas princesas para um mundo perigoso, muito longe de casa.','Sem desistir, elas fogem por 6 mundos: árvores, deserto, pântano, céus, gelo e Lua.','O Molusco as espera no fim. Mas juntas, Cati e Isadora são mais fortes!'],
 w:['Mundo das Árvores','Mundo do Deserto','Mundo do Pântano','Mundo dos Céus','Mundo do Gelo','Mundo da Lua'],b:['Lesmão Verde','Caranguejo Rei','Polvo do Brejo','Nuvem Trovão','Lesmão Glacial','Molusco'],
 wl:['Preciso achar o caminho de casa!','Que calor! Vou em frente.','Eca, que lama...','Estou nas nuvens!','Brrr! Que frio! Vamos em frente.','A Lua! O Molusco está aqui!'],
@@ -130,8 +131,8 @@ hurt:['Ai!','Ui!','Ops!'],stomp:['Toma essa!','Uhuu!','Tchau, lesma!','Pulei!'],
 bl:'Mua-ha-ha! Vocês nunca voltarão pra casa!',bm:'Eu sou o %! Você não passará!',bh:'Ai! Isso doeu!',bv:'Consegui! Vitória!',lock:'Derrote o chefe para abrir a porta!',hold:' - segure Pular',
 cl:'Fase completa!',wc:'Mundo concluído!',nx:'Próximo: ',nice:'Muito bem! Falta pouco para chegar em casa.',gems:'Gemas secretas: ',of:' de ',tapc:'Toque para continuar',
 o1:'Ops! A princesa se cansou.',o2:'Mas princesas nunca desistem!',tapr:'Toque para tentar de novo',
-v1:'Elas chegaram em casa!',v2:'Cati e Isadora derrotaram o Molusco e voltaram juntas!',stars:'Estrelas coletadas: ',end:'Fim. Parabéns, campeã!',tapa:'Toque para voltar ao menu',pause:'Pausa',resume:'Continuar',menu:'Menu principal',story:'História',cont:'Continuar',best:'Melhor: '},
-en:{title:'Princess Cati on the Run',play:'Play',skip:'Skip',jmp:'Jump',d:['Easy','Normal','Hard'],
+v1:'Elas chegaram em casa!',v2:'Cati e Isadora derrotaram o Molusco e voltaram juntas!',stars:'Estrelas coletadas: ',end:'Fim. Parabéns, campeã!',tapa:'Toque para voltar ao menu',pause:'Pausa',resume:'Continuar',menu:'Menu principal',story:'Ver história',cont:'Continuar',best:'Melhor: '},
+en:{title:'Princess Cati on the Run',play:'Play',newgame:'New story',skip:'Skip',jmp:'Jump',d:['Easy','Normal','Hard'],
 s:['In the kingdom of Nevesco, sisters Cati and Isadora lived happily in their castle, full of laughter and games.','But on a stormy night, the cruel Molusco broke down the gates and invaded the castle!','He took both princesses to a dangerous world, far from home.','Without giving up, they flee together through 6 worlds: trees, desert, swamp, skies, ice and the Moon.','Molusco waits at the end. But together, Cati and Isadora are stronger!'],
 w:['Tree World','Desert World','Swamp World','Sky World','Ice World','Moon World'],b:['Green Slugger','King Crab','Bog Octopus','Thunder Cloud','Glacial Slugger','Molusco'],
 wl:['I must find my way home!','So hot! Onward!','Yuck, so muddy...','I’m in the clouds!','Brr! So cold! Keep going.','The Moon! Molusco is here!'],
@@ -141,8 +142,8 @@ hurt:['Ouch!','Oof!','Oops!'],stomp:['Take that!','Yay!','Bye, slug!','Boing!'],
 bl:'Mwa-ha-ha! You will never get home!',bm:'I am %! You shall not pass!',bh:'Ouch! That hurt!',bv:'I did it! Victory!',lock:'Defeat the boss to open the door!',hold:' - hold Jump',
 cl:'Level complete!',wc:'World complete!',nx:'Next: ',nice:'Well done! Home is getting closer.',gems:'Secret gems: ',of:' of ',tapc:'Tap to continue',
 o1:'Oops! The princess got tired.',o2:'But princesses never give up!',tapr:'Tap to try again',
-v1:'They made it home!',v2:'Cati and Isadora defeated Molusco and went home together!',stars:'Stars collected: ',end:'The end. Congratulations, champion!',tapa:'Tap to go back to the menu',pause:'Paused',resume:'Resume',menu:'Main menu',story:'Story',cont:'Continue',best:'Best: '},
-es:{title:'Princesa Cati en Fuga',play:'Jugar',skip:'Saltar',jmp:'Saltar',d:['Fácil','Normal','Difícil'],
+v1:'They made it home!',v2:'Cati and Isadora defeated Molusco and went home together!',stars:'Stars collected: ',end:'The end. Congratulations, champion!',tapa:'Tap to go back to the menu',pause:'Paused',resume:'Resume',menu:'Main menu',story:'Watch story',cont:'Continue',best:'Best: '},
+es:{title:'Princesa Cati en Fuga',play:'Jugar',newgame:'Nueva historia',skip:'Saltar',jmp:'Saltar',d:['Fácil','Normal','Difícil'],
 s:['En el reino de Nevesco, las hermanas Cati e Isadora vivían felices en su castillo, entre risas y juegos.','Pero en una noche de tormenta, ¡el cruel Molusco rompió las puertas e invadió el castillo!','Se llevó a las dos princesas a un mundo peligroso, muy lejos de casa.','Sin rendirse, huyen juntas por 6 mundos: árboles, desierto, pantano, cielos, hielo y la Luna.','Molusco las espera al final. Pero juntas, ¡Cati e Isadora son más fuertes!'],
 w:['Mundo de los Árboles','Mundo del Desierto','Mundo del Pantano','Mundo de los Cielos','Mundo del Hielo','Mundo de la Luna'],b:['Babosón Verde','Cangrejo Rey','Pulpo del Pantano','Nube Trueno','Babosón Glacial','Molusco'],
 wl:['¡Debo encontrar el camino a casa!','¡Qué calor! Sigo adelante.','Puaj, qué barro...','¡Estoy en las nubes!','¡Brr! ¡Qué frío! Sigamos.','¡La Luna! ¡Molusco está aquí!'],
@@ -152,16 +153,19 @@ hurt:['¡Ay!','¡Uy!','¡Ups!'],stomp:['¡Toma!','¡Yuju!','¡Adiós, babosa!','
 bl:'¡Mua-ja-ja! ¡Nunca volverán a casa!',bm:'¡Soy %! ¡No pasarás!',bh:'¡Ay! ¡Eso dolió!',bv:'¡Lo logré! ¡Victoria!',lock:'¡Derrota al jefe para abrir la puerta!',hold:' - mantén Saltar',
 cl:'¡Nivel completado!',wc:'¡Mundo completado!',nx:'Siguiente: ',nice:'¡Muy bien! Falta poco para llegar a casa.',gems:'Gemas secretas: ',of:' de ',tapc:'Toca para continuar',
 o1:'¡Ups! La princesa se cansó.',o2:'¡Pero las princesas nunca se rinden!',tapr:'Toca para intentarlo otra vez',
-v1:'¡Llegaron a casa!',v2:'¡Cati e Isadora derrotaron a Molusco y volvieron juntas!',stars:'Estrellas recogidas: ',end:'Fin. ¡Felicidades, campeona!',tapa:'Toca para volver al menú',pause:'Pausa',resume:'Continuar',menu:'Menú principal',story:'Historia',cont:'Continuar',best:'Mejor: '}};
+v1:'¡Llegaron a casa!',v2:'¡Cati e Isadora derrotaron a Molusco y volvieron juntas!',stars:'Estrellas recogidas: ',end:'Fin. ¡Felicidades, campeona!',tapa:'Toca para volver al menú',pause:'Pausa',resume:'Continuar',menu:'Menú principal',story:'Ver historia',cont:'Continuar',best:'Mejor: '}};
 const SV=(()=>{try{return JSON.parse(localStorage.getItem('cati')||'{}')}catch(e){return{}}})();
-let lang=SV.lang||null,dif=SV.dif??1,ch=SV.ch||0,seen=!!SV.seen,paused=false,introI=0,introT=0,btns=[],wseen={},wintroT=0,prog=Math.max(0,Math.min(LV.length,SV.prog||0)),best=SV.best||0,hashLvl=null;
+let lang=SV.lang||null,dif=SV.dif??1,ch=SV.ch||0,seen=!!SV.seen,paused=false,introI=0,introT=0,introNext='menu',btns=[],wseen={},wintroT=0,prog=Math.max(0,Math.min(LV.length,SV.prog||0)),best=SV.best||0,hashLvl=null;
 const DF={h:[5,3,2],es:[.75,1,1.3],b:[-1,0,1],i:[140,100,70]};
 function tr(k){const D_=TX[lang||'pt'];return D_[k]!==undefined?D_[k]:TX.pt[k]}
 function save(){try{localStorage.setItem('cati',JSON.stringify({lang,dif,ch,seen,prog,best}))}catch(e){}}
 function applyLang(){document.getElementById('jump').textContent=tr('jmp');document.documentElement.lang=lang||'pt';document.title=tr('title')}
-function setLang(i){lang=['pt','en','es'][i];applyLang();save();if(state=='lang'){state=seen?'menu':'intro';introI=0;introT=0}}
+function setLang(i){lang=['pt','en','es'][i];applyLang();save();if(state=='lang'){state='menu';introI=0;introT=0;introNext='menu'}}
 function enterLevel(i){lvl=i;load(i);paused=false;if(L.i==0&&!wseen[L.w]){wseen[L.w]=1;wintroT=0;state='wintro';[523,784].forEach((f,k)=>setTimeout(()=>snd(f,.16,'triangle',.05),k*110))}else{state='play';snd(660,.1)}}
 function startGame(from=0){lvl=Math.max(0,Math.min(LV.length-1,from));total=0;hearts=DF.h[dif];paused=false;wseen={};enterLevel(lvl);if(!document.fullscreenElement)fs()}
+function startStory(next='game'){introNext=next;introI=0;introT=0;state='intro'}
+function newStory(){prog=0;save();startGame(0)}
+function finishIntro(){seen=true;if(introNext=='game'){introNext='menu';newStory()}else{state='menu';introT=0;save()}}
 function toMenu(){paused=false;lvl=0;total=0;load(0);state='menu'}
 function pause(v){if(state!='play')return;paused=v===undefined?!paused:v;keys.left=keys.right=keys.jump=keys.shoot=keys.tongue=0}
 function rr(a,b,w,h,r){x.beginPath();if(x.roundRect)x.roundRect(a,b,w,h,r);else x.rect(a,b,w,h)}
@@ -175,7 +179,7 @@ function flag(i,cx,cy,w,h,sel){const a=cx-w/2,b=cy-h/2;x.save();rr(a,b,w,h,6);x.
  x.restore();x.strokeStyle=sel?'#ffd43b':'rgba(255,255,255,.7)';x.lineWidth=sel?5:2;rr(a,b,w,h,6);x.stroke()}
 const FP=()=>({x:-11,y:-30,w:22,h:30,f:1,vx:0,ground:true,inv:0,star:0,wing:0});
 let spT=0;
-function endSplash(){if(hashLvl!=null){if(!lang){lang='pt';applyLang()}startGame(hashLvl);return}state=lang?(seen?'menu':'intro'):'lang';introI=0;introT=0}
+function endSplash(){if(hashLvl!=null){if(!lang){lang='pt';applyLang()}startGame(hashLvl);return}state=lang?'menu':'lang';introI=0;introT=0;introNext='menu'}
 function chime(n){try{ac=ac||new AudioContext();if(ac.state!='running')return;(n==18?[523,784]:n==95?[659,988]:[784,1047,1319,1568]).forEach((f,i)=>setTimeout(()=>snd(f,.5,'triangle',.05),i*110))}catch(e){}}
 function splash(){const t=spT,cx=W/2,my=138,R=52,e=(a,b)=>Math.max(0,Math.min(1,(t-a)/(b-a))),eo=v=>1-Math.pow(1-v,3),fade=Math.min(e(0,30),1-e(272,300));
  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#150b2b');g.addColorStop(1,'#3b1d63');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -270,7 +274,7 @@ function introScreen(){const Ls=tr('s'),i=Math.min(introI,Ls.length-1),cx=W/2,t=
  wrap(Ls[i],cx,354,mw-46,26,21);
  Ls.forEach((_,k)=>{x.fillStyle=k==i?'#ffd43b':'rgba(255,255,255,.4)';x.beginPath();x.arc(cx+(k-(Ls.length-1)/2)*22,H-9,5,0,7);x.fill()});
  x.globalAlpha=.45+.45*Math.sin(t*.09);tx('▶',W-24,H-8,16,'#ffe27a');x.globalAlpha=1;
- pill(W-110,8,98,30,tr('skip'),false,()=>{state='menu';seen=true;introT=0;save()},15);
+ pill(W-110,8,98,30,tr('skip'),false,finishIntro,15);
  btn(0,0,W,H,adv)}
 function wintroScreen(){const cx=W/2,t=wintroT,e=Math.min(1,t/18),off=(1-e)*16,ic=['🌳','🏜️','🐸','☁️','❄️','🌙'][L.w];
  x.globalAlpha=e;
@@ -296,17 +300,17 @@ function screens(){btns=[];if(state=='splash'){splash();return}const cx=W/2,S=st
    x.save();x.translate(px,196);x.scale(3,3);cati(FP(),i);x.restore();tx(i?'Isadora':'Cati',px,222,22);btn(px-75,80,150,150,()=>{ch=i;save();snd(700,.08)})});
   [0,1,2].forEach(i=>pill(cx+(i-1)*140-60,250,120,40,tr('d')[i],dif==i,()=>{dif=i;save()}));
   [0,1,2].forEach(i=>{const fx=cx+(i-1)*70;flag(i,fx,322,48,32,['pt','en','es'][i]==lang);btn(fx-26,304,52,36,()=>setLang(i))});
-  if(prog>0&&prog<LV.length){pill(cx-232,362,220,56,tr('cont'),true,()=>startGame(prog),27);pill(cx+12,362,220,56,tr('play'),true,startGame,27)}
-  else pill(cx-110,362,220,56,tr('play'),true,startGame,30);
-  pill(12,H-36,112,28,tr('story'),false,()=>{state='intro';introI=0;introT=0},14);
+  if(prog>0&&prog<LV.length){const n=LV[prog],code=(n.w+1)+'-'+(n.i+1);pill(cx-232,362,220,56,tr('cont')+' '+code,true,()=>startGame(prog),27);pill(cx+12,362,220,56,tr('newgame'),true,()=>startStory('game'),27)}
+  else pill(cx-110,362,220,56,tr('newgame'),true,()=>startStory('game'),30);
+  pill(12,H-36,112,28,tr('story'),false,()=>startStory('menu'),14);
   if(best>0)tx(tr('best')+best,W-14,H-16,18,'#ffe27a','right')}
  else if(S=='clear'){const nw=LV[lvl+1]&&LV[lvl+1].w!=L.w;tx(tr(nw?'wc':'cl'),cx,130,44,'#ffd1e6');tx(nw?tr('nx')+tr('w')[LV[lvl+1].w]:tr('nice'),cx,200,24);if(gtot)tx(tr('gems')+gget+tr('of')+gtot,cx,240,24);wmap(292);tx(tr('tapc'),cx,375,26,'#ffe27a')}
  else if(S=='over'){tx(tr('o1'),cx,130,42,'#ffd1e6');tx(tr('o2'),cx,200,24);tx(tr('tapr'),cx,360,26,'#ffe27a')}
  else if(S=='win'){tx(tr('v1'),cx,130,44,'#ffd1e6');tx(tr('v2'),cx,200,24);tx(tr('stars')+total,cx,240,24);tx(tr('end'),cx,280,24);tx(tr('tapa'),cx,360,26,'#ffe27a')}
  else{tx(tr('pause'),cx,120,50,'#ffd1e6');pill(cx-110,170,220,52,tr('resume'),true,()=>pause(false),26);pill(cx-110,240,220,52,tr('menu'),false,toMenu,24)}}
 function adv(){const n=performance.now();if(n-advAt<350)return;advAt=n;
- if(state=='splash'){if(spT>15)endSplash()}else if(state=='menu')startGame();
- else if(state=='intro'){introT=0;introI++;if(introI>=tr('s').length){state='menu';seen=true;save()}}
+ if(state=='splash'){if(spT>15)endSplash()}else if(state=='menu')startStory('game');
+ else if(state=='intro'){introT=0;introI++;if(introI>=tr('s').length)finishIntro()}
  else if(state=='wintro'){state='play';snd(660,.1)}
  else if(state=='clear'){lvl++;if(lvl>=LV.length){best=Math.max(best,total);prog=LV.length;save();state='win';jingle()}else{best=Math.max(best,total);prog=Math.max(prog,lvl);save();enterLevel(lvl)}}
  else if(state=='over'){best=Math.max(best,total);save();total=startCoins;hearts=DF.h[dif];enterLevel(lvl)}
@@ -339,7 +343,7 @@ function bossArt(e){const w=e.wd??L.w;x.save();x.translate(e.x+e.w/2,e.y+e.h);if
 function flyer(e){if(e.hi&&tick%6<3)return;x.save();x.translate(e.x+15,e.y+12);if(e.vx>0)x.scale(-1,1);if(e.dead)x.scale(1,.3);const f=Math.sin(tick*.5)*6;x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.ellipse(3,-9,9,7+f*.5,-.3,0,7);x.fill();x.fillStyle=L.s;x.beginPath();x.ellipse(0,0,14,10,0,0,7);x.fill();x.fillStyle=L.h;x.fillRect(-3,-9,4,18);x.fillRect(5,-8,4,16);x.fillStyle='#fff';x.beginPath();x.arc(-8,-2,3.2,0,7);x.fill();x.fillStyle='#222';x.beginPath();x.arc(-9,-2,1.5,0,7);x.fill();x.restore()}
 function spiky(e){if(e.hi&&tick%6<3)return;x.save();x.translate(e.x+15,e.y+28);if(e.vx>0)x.scale(-1,1);if(e.dead)x.scale(1,.3);x.fillStyle=L.h;for(let i=0;i<9;i++){const a=Math.PI+i*Math.PI/8;x.beginPath();x.moveTo(Math.cos(a-.2)*12,-12+Math.sin(a-.2)*12);x.lineTo(Math.cos(a)*22,-12+Math.sin(a)*22);x.lineTo(Math.cos(a+.2)*12,-12+Math.sin(a+.2)*12);x.fill()}x.fillStyle='#3b2a4a';x.beginPath();x.arc(0,-12,13,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(-6,-14,3.5,0,7);x.fill();x.fillStyle='#c00';x.beginPath();x.arc(-7,-14,1.6,0,7);x.fill();x.strokeStyle='#111';x.lineWidth=2;x.beginPath();x.moveTo(-11,-21);x.lineTo(-3,-17);x.stroke();x.restore()}
 function mountArt(){if(p.mount)dino(p.x+11,p.y+p.h,p.f,Math.abs(p.vx)>.5&&p.ground,p.tg)}
-function dino(cx,by,f,run,tg){const sw=run?Math.sin(tick*.4)*4:0,c1=ch?'#6fb7ff':'#7ad67a';x.save();x.translate(cx,by);x.scale(f,1);
+function dino(cx,by,f,run,tg){const sw=run?Math.sin(tick*.4)*4:0,c1=DINO[L.w]||'#7ad67a';x.save();x.translate(cx,by);x.scale(f,1);
  if(tg>0){const len=70*Math.sin(Math.PI*(14-tg)/14);x.strokeStyle='#ff6b8b';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(20,-17);x.lineTo(20+len,-17);x.stroke();x.fillStyle='#ff4f7a';x.beginPath();x.arc(20+len,-17,6,0,7);x.fill();x.lineCap='butt'}
  x.fillStyle=c1;x.beginPath();x.ellipse(0,-12,17,11,0,0,7);x.fill();x.fillRect(-9+sw,-6,6,6);x.fillRect(4-sw,-6,6,6);x.beginPath();x.moveTo(-14,-14);x.lineTo(-27,-8);x.lineTo(-14,-6);x.fill();x.beginPath();x.arc(15,-20,9,0,7);x.fill();
  x.fillStyle='#fff3c4';x.beginPath();x.ellipse(2,-7,10,5,0,0,7);x.fill();x.fillStyle='#e8476f';x.fillRect(-7,-24,14,6);x.fillStyle='#fff';x.beginPath();x.arc(18,-23,3,0,7);x.fill();x.fillStyle='#222';x.beginPath();x.arc(19,-23,1.4,0,7);x.fill();x.fillStyle=L.h;for(let i=0;i<3;i++){x.beginPath();x.moveTo(-10+i*8,-22);x.lineTo(-6+i*8,-29);x.lineTo(-2+i*8,-22);x.fill()}x.restore()}
