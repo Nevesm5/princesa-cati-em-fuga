@@ -50,18 +50,40 @@ jobs:
             ls -la
             exit 1
           fi
-          command -v convert >/dev/null || sudo apt-get install -y imagemagick
+          npm install jimp@0.22
+          node <<'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const Jimp = require('jimp');
+          const res = 'android/app/src/main/res';
+          const sizes = [
+            ['mdpi', 48, 108],
+            ['hdpi', 72, 162],
+            ['xhdpi', 96, 216],
+            ['xxhdpi', 144, 324],
+            ['xxxhdpi', 192, 432],
+          ];
+          (async () => {
+            const img = await Jimp.read('icon-only.png');
+            for (const [d, l, f] of sizes) {
+              const dir = path.join(res, `mipmap-${d}`);
+              fs.mkdirSync(dir, { recursive: true });
+              const icon = img.clone().resize(l, l, Jimp.RESIZE_BICUBIC);
+              await icon.writeAsync(path.join(dir, 'ic_launcher.png'));
+              await icon.clone().writeAsync(path.join(dir, 'ic_launcher_round.png'));
+              const fgSize = Math.floor(f * 0.72);
+              const fg = img.clone().resize(fgSize, fgSize, Jimp.RESIZE_BICUBIC);
+              const canvas = new Jimp(f, f, 0x00000000);
+              canvas.composite(fg, Math.round((f - fgSize) / 2), Math.round((f - fgSize) / 2));
+              await canvas.writeAsync(path.join(dir, 'cati_icon_fg.png'));
+            }
+          })().catch((e) => {
+            console.error(e);
+            process.exit(1);
+          });
+          EOF
           RES=android/app/src/main/res
           BG='#86ddf8'
-          for item in mdpi:48:108 hdpi:72:162 xhdpi:96:216 xxhdpi:144:324 xxxhdpi:192:432; do
-            IFS=: read d l f <<< "$item"
-            mkdir -p $RES/mipmap-$d
-            convert icon-only.png -resize ${l}x${l} PNG32:$RES/mipmap-$d/ic_launcher.png
-            cp $RES/mipmap-$d/ic_launcher.png $RES/mipmap-$d/ic_launcher_round.png
-            convert icon-only.png -resize $((f*72/100))x$((f*72/100)) \
-              -background none -gravity center -extent ${f}x${f} \
-              PNG32:$RES/mipmap-$d/cati_icon_fg.png
-          done
           mkdir -p $RES/values $RES/mipmap-anydpi-v26
           echo "<resources><color name=\"cati_icon_bg\">$BG</color></resources>" > $RES/values/cati_icon_colors.xml
           for n in ic_launcher ic_launcher_round; do
