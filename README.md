@@ -27,6 +27,8 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 - Progresso salvo no aparelho, com opção de continuar do início da fase e do mundo onde parou
 - Menu com **Continuar** (mostrando a fase) ou **Nova história**, que sempre abre a introdução
 - Dinossauros com cores temáticas de cada mundo
+- Inimigos moluscos diferentes em cada mundo, com voadores próprios e sub-chefes
+- Chefes com ataques especiais de cada mundo, como flocos de neve no Gelo
 - Buracos com aparência e paisagem diferentes em cada mundo
 - Blocos "?" com poderes: estrelas mágicas (cada princesa tem a sua) e uma montaria que engole inimigos
 - Músicas, efeitos sonoros, pausa e controles de toque para celular
