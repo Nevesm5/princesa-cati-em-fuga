@@ -43,6 +43,39 @@ jobs:
           npx cap add android
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$VERSION\"/" android/app/build.gradle
 
+      - name: Configurar assinatura (opcional)
+        env:
+          ANDROID_RELEASE_KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_RELEASE_KEYSTORE_BASE64" ]; then
+            echo "SIGNED=0" >> $GITHUB_ENV
+            echo "ANDROID_RELEASE_KEYSTORE_BASE64 não configurado; APK debug será gerado."
+            exit 0
+          fi
+          printf '%s' "$ANDROID_RELEASE_KEYSTORE_BASE64" | base64 -d > android/app/release.p12
+          cat >> android/app/build.gradle <<'EOF'
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('release.p12')
+                      storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                      keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                      keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+                      storeType 'PKCS12'
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          EOF
+          echo "SIGNED=1" >> $GITHUB_ENV
+
       - name: Gerar os ícones
         run: |
           if [ ! -f icon-only.png ]; then
@@ -97,10 +130,16 @@ jobs:
           npx cap sync android
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          if [ "${SIGNED:-0}" = "1" ]; then
+            echo "APK_DIR=release" >> $GITHUB_ENV
+            ./gradlew assembleRelease
+          else
+            echo "APK_DIR=debug" >> $GITHUB_ENV
+            ./gradlew assembleDebug
+          fi
 
       - name: Renomear o APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk PrincesaCati-v$VERSION.apk
+        run: cp android/app/build/outputs/apk/${APK_DIR:-debug}/app-${APK_DIR:-debug}.apk PrincesaCati-v$VERSION.apk
 
       - name: Publicar nova Release
         uses: softprops/action-gh-release@v2
