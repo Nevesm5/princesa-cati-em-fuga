@@ -11,29 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Baixa o histórico completo de tags (fetch-depth: 0 é essencial)
+      # 1. Baixa o histórico completo de tags
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Calcula a próxima versão (ex: v1.0 -> v1.1)
+      # 2. Calcula a próxima versão (v1.0 -> v1.1 -> v1.2)
       - name: Calculate Next Version
         id: versioning
         run: |
-          # Busca a última tag que comece com 'v' (ex: v1.0)
           LATEST_TAG=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "")
 
           if [ -z "$LATEST_TAG" ]; then
-            # Se não existir nenhuma tag, começa na 1.0
             NEW_VERSION="v1.0"
           else
-            # Extrai o número major (1) e minor (0, 1, 2...)
             VERSION_WITHOUT_V="${LATEST_TAG#v}"
             MAJOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f1)
             MINOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f2)
-
-            # Incrementa o minor em +1
             NEW_MINOR=$((MINOR + 1))
             NEW_VERSION="v${MAJOR}.${NEW_MINOR}"
           fi
@@ -41,24 +36,22 @@ jobs:
           echo "VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Próxima versão: $NEW_VERSION"
 
-      # 3. Configura Java
+      # 3. Configura o JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Torna o gradlew executável
+      # 4. Torna o gradlew executável na raiz
       - name: Make Gradle executable
-        run: chmod +x android/gradlew # Remova 'android/' se estiver na raiz
+        run: chmod +x gradlew
 
-      # 5. Compila os APKs
+      # 5. Compila os APKs na raiz
       - name: Build Android Release APK
-        run: |
-          cd android # Remova se estiver na raiz
-          ./gradlew assembleRelease
+        run: ./gradlew assembleRelease
 
-      # 6. Cria a nova Tag no repositório e publica a Release com os APKs
+      # 6. Cria a Release e faz upload dos APKs gerados
       - name: Create Release & Upload APK
         uses: softprops/action-gh-release@v2
         with:
@@ -67,6 +60,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            android/app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
