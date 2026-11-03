@@ -2,7 +2,7 @@
 
 Jogo de plataforma estilo Super Mario Bros, feito em um único arquivo HTML (canvas + JavaScript puro, sem dependências).
 
-▶️ **Jogar online:** `https://nevesm5.github.io/princesa-cati-em-fuga/` (depois de ativar o GitHub Pages, veja abaixo)
+▶️ **Jogar online:** `https://nevesm5.github.io/princesa-cati-em-fuga/` 
 
 As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e levadas para um mundo perigoso. Juntas, elas precisam atravessar 5 mundos para voltar para casa.
 
