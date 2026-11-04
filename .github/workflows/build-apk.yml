@@ -43,6 +43,59 @@ jobs:
           npx cap add android
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$VERSION\"/" android/app/build.gradle
 
+      - name: Configurar orientação e fullscreen nativo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          ANDROID = '{http://schemas.android.com/apk/res/android}'
+          ET.register_namespace('android', 'http://schemas.android.com/apk/res/android')
+          ET.register_namespace('tools', 'http://schemas.android.com/tools')
+
+          manifest = Path('android/app/src/main/AndroidManifest.xml')
+          if not manifest.exists():
+              raise SystemExit('AndroidManifest.xml não encontrado')
+          tree = ET.parse(manifest)
+          root = tree.getroot()
+          found = False
+          for activity in root.findall('.//activity'):
+              if activity.get(ANDROID + 'name') in ('.MainActivity', 'com.nevesco.cati.MainActivity'):
+                  activity.set(ANDROID + 'screenOrientation', 'sensorLandscape')
+                  activity.set(ANDROID + 'configChanges', 'orientation|screenSize|keyboardHidden')
+                  found = True
+          if not found:
+              raise SystemExit('MainActivity não encontrada no AndroidManifest.xml')
+          tree.write(manifest, encoding='utf-8', xml_declaration=True)
+
+          styles = Path('android/app/src/main/res/values/styles.xml')
+          if not styles.exists():
+              raise SystemExit('styles.xml não encontrado')
+          tree = ET.parse(styles)
+          root = tree.getroot()
+          style_node = None
+          for style in root:
+              if style.tag == 'style' and style.get('name') == 'AppTheme':
+                  style_node = style
+                  break
+          if style_node is None:
+              raise SystemExit('AppTheme não encontrada em styles.xml')
+          wanted = {
+              'android:windowFullscreen': 'true',
+              'android:windowHideNavigation': 'true',
+              'android:windowLayoutInDisplayCutoutMode': 'shortEdges',
+          }
+          existing = {item.get('name'): item for item in style_node}
+          for name, value in wanted.items():
+              if name in existing:
+                  existing[name].text = value
+              else:
+                  item = ET.SubElement(style_node, 'item')
+                  item.set('name', name)
+                  item.text = value
+          tree.write(styles, encoding='utf-8', xml_declaration=True)
+          print('Orientação landscape e fullscreen nativo configurados.')
+          PY
+
       - name: Gerar os ícones
         run: |
           if [ ! -f icon-only.png ]; then

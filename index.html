@@ -17,11 +17,10 @@ button.on{background:var(--btnon);transform:translateY(4px);box-shadow:0 1px 0 r
 #fs{position:fixed;top:max(6px,env(safe-area-inset-top,0px));left:50%;margin-left:-72px;width:40px;height:40px;font-size:20px;opacity:.7;box-shadow:none}
 #mu{position:fixed;top:max(6px,env(safe-area-inset-top,0px));left:50%;margin-left:-20px;width:40px;height:40px;font-size:20px;opacity:.7;box-shadow:none}
 #pa{position:fixed;top:max(6px,env(safe-area-inset-top,0px));left:50%;margin-left:32px;width:40px;height:40px;font-size:18px;opacity:.7;box-shadow:none}
-#rot{display:none;position:fixed;inset:0;z-index:5;background:#241636;color:#ffe3f1;align-items:center;justify-content:center;text-align:center;font-size:24px;padding:24px}
-@media (orientation:portrait){#rot{display:flex}}
+
 </style></head><body>
 <canvas id="c" width="800" height="448"></canvas>
-<button id="fs">⛶</button><button id="mu">♪</button><button id="pa"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="1" width="4" height="14" rx="1" fill="#fff"/><rect x="10" y="1" width="4" height="14" rx="1" fill="#fff"/></svg></button><div id="rot">↻<br><br>Gire o celular<br>Rotate your phone<br>Gira el móvil</div>
+<button id="fs">⛶</button><button id="mu">♪</button><button id="pa"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="1" width="4" height="14" rx="1" fill="#fff"/><rect x="10" y="1" width="4" height="14" rx="1" fill="#fff"/></svg></button>
 <div id="pad"><div><button id="left">◀</button><button id="right">▶</button></div><div><button id="tongue">👅</button><button id="shoot">⭐</button><button id="jump">Pular</button></div></div>
 <script>
 const cv=document.getElementById('c'),x=cv.getContext('2d');
@@ -487,8 +486,9 @@ function draw(){x.setTransform(K,0,0,K,0,0);const mm=state=='lang'||state=='intr
  if(msgT>0&&state=='play'&&!paused)tx(['🌳','🏜️','🐸','☁️','❄️','🌙'][L.w]+' '+msg,W/2,110,32);else if(state=='play'&&!paused)tx(tr('w')[L.w]+'  '+(L.w+1)+'-'+(L.i+1),W/2,80,17);
  if(state!='play'||paused)screens()}
 let K=1;function fit(){const dpr=Math.min(devicePixelRatio||1,2),vw=innerWidth,vh=innerHeight;W=Math.max(640,Math.min(1100,Math.round(H*vw/vh)));const cw=vh*W/H;cv.style.width=cw+'px';cv.style.height=vh+'px';cv.style.left=(vw-cw)/2+'px';cv.width=Math.round(W*vh*dpr/H);cv.height=Math.round(vh*dpr);K=cv.height/H}
-function fs(){try{const d=document.documentElement;if(document.fullscreenElement)document.exitFullscreen();else if(d.requestFullscreen)d.requestFullscreen({navigationUI:'hide'}).then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}catch(e){}}
-const fb=document.getElementById('fs');if(!document.fullscreenEnabled)fb.style.display='none';fb.addEventListener('click',fs);
+function fs(){try{const d=document.documentElement;if(document.fullscreenElement){const p=document.exitFullscreen&&document.exitFullscreen();if(p&&p.catch)p.catch(()=>{})}else if(d.requestFullscreen){d.requestFullscreen({navigationUI:'hide'}).then(()=>{try{screen.orientation&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}}catch(e){}}
+const fb=document.getElementById('fs');
+if(!document.fullscreenEnabled){fb.style.display='none'}else{const onFull=()=>fb.textContent=document.fullscreenElement?'🗗':'⛶';fb.addEventListener('click',()=>fs());document.addEventListener('fullscreenchange',onFull);onFull()}
 let mus=1,mstep=0;const fq=n=>220*Math.pow(2,n/12),R_=null;
 const MEL=[[12,R_,16,19,24,R_,19,16,17,R_,21,24,19,R_,16,R_],[12,13,16,R_,17,16,13,12,9,R_,12,13,16,R_,13,R_],[12,R_,15,R_,19,15,R_,12,10,R_,14,R_,17,14,R_,10],[19,R_,24,23,19,R_,16,19,21,R_,24,R_,28,24,R_,R_],[15,R_,19,R_,22,R_,19,15,12,R_,15,R_,19,22,19,R_],[12,R_,R_,19,R_,17,R_,R_,15,R_,R_,12,R_,19,R_,R_],[12,16,19,24,19,16,12,16,14,17,21,26,21,17,14,17]],ROOT=[3,5,0,7,8,2,3],BPM=[170,150,110,165,140,120,160];
 function nz(d,v){try{ac=ac||new AudioContext();const n=ac.sampleRate*d|0,b=ac.createBuffer(1,n,ac.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const q=ac.createBufferSource(),g=ac.createGain();q.buffer=b;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);q.connect(g);g.connect(ac.destination);q.start()}catch(e){}}
