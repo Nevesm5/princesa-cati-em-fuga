@@ -48,7 +48,7 @@ function gen(w,i){const D=WD[w],R=rng(w*97+i*13+5),r=(a,b)=>a+Math.floor(R()*(b-
  if(bo){o.pl.push([len-18,9,3],[len-8,9,3]);o.boss=len-14;o.bh=BH[w]}
  return o}
 const LV=[];WD.forEach((D,w)=>{for(let i=0;i<D.lv;i++)LV.push(gen(w,i))});
-let L,G,p,en,co,it,gm,gtot,gget,bubs=[],bl=[],eb=[],fm=null,ate=0,cam,lvl=0,state='title',hearts=3,total=0,startCoins=0,cp,tick=0,msg='',msgT=0,advAt=0;
+let L,G,p,en,co,it,gm,gtot,gget,bubs=[],bl=[],eb=[],fm=null,ate=0,cam,lvl=0,state='title',hearts=3,total=0,startCoins=0,cp,tick=0,msg='',msgT=0,advAt=0,narr=null;
 const keys={left:0,right:0,jump:0,shoot:0,tongue:0};let jp=0;
 let ac;function snd(f,d=.1,t='square',v=.04){try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 const BD=[[56,48],[72,44],[60,58],[78,52],[74,58],[70,68]];
@@ -183,10 +183,13 @@ function applyLang(){document.getElementById('jump').textContent=tr('jmp');docum
 function setLang(i){lang=['pt','en','es'][i];applyLang();save();if(state=='lang'){state='menu';introI=0;introT=0;introNext='menu'}}
 function enterLevel(i){lvl=i;load(i);paused=false;if(L.i==0&&!wseen[L.w]){wseen[L.w]=1;wintroT=0;state='wintro';cancelNarration();narrateWorldIntro(L.w);[523,784].forEach((f,k)=>setTimeout(()=>snd(f,.16,'triangle',.05),k*110))}else{state='play';snd(660,.1)}}
 function startGame(from=0){lvl=Math.max(0,Math.min(LV.length-1,from));total=0;hearts=DF.h[dif];paused=false;wseen={};enterLevel(lvl);if(!document.fullscreenElement)fs()}
-function narrate(text){try{if(!mus||!('speechSynthesis' in window))return;const synth=speechSynthesis;synth.cancel();const u=new SpeechSynthesisUtterance(text);const tag=({pt:'pt-BR',en:'en-US',es:'es-ES'}[lang]||'pt-BR');const voices=synth.getVoices()||[];const compatible=voices.filter(v=>(v.lang||'').toLowerCase().split('-')[0]===tag.split('-')[0]);const feminine=/female|woman|mulher|femin|girl|kid|child|zira|maria|luciana|monica|samantha|sofia|eva/i;u.voice=compatible.find(v=>feminine.test(v.name))||compatible[0]||null;u.lang=tag;u.rate=.88;u.pitch=1.18;u.volume=1;synth.speak(u)}catch(e){}}
-function narrateIntro(i){const lines=tr('s');if(i>=0&&i<lines.length)narrate(lines[i])}
-function cancelNarration(){try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
-function narrateWorldIntro(w){narrate(tr('w')[w]+'. '+tr('wl')[w]+' '+tr('wi')[w])}
+function narrText(id){const parts=id.split('-'),l=parts[0]||'pt',i=parts[1];if(i==='w'){const w=+id.split('-w')[1];return tr('w')[w]+'. '+tr('wl')[w]+' '+tr('wi')[w]}return tr('s')[+i]}
+function stopNarration(){try{if(narr){narr.pause();narr.currentTime=0;narr.onended=narr.onerror=null;narr=null}if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
+function fallbackSpeak(id){if(!('speechSynthesis' in window))return;const synth=speechSynthesis;synth.cancel();const text=narrText(id);if(!text)return;const u=new SpeechSynthesisUtterance(text);const tag=({pt:'pt-BR',en:'en-US',es:'es-ES'}[lang]||'pt-BR');const voices=synth.getVoices()||[];const compatible=voices.filter(v=>(v.lang||'').toLowerCase().split('-')[0]===tag.split('-')[0]);const feminine=/female|woman|mulher|femin|girl|kid|child|zira|maria|luciana|monica|samantha|sofia|eva/i;u.voice=compatible.find(v=>feminine.test(v.name))||compatible[0]||null;u.lang=tag;u.rate=.88;u.pitch=1.18;u.volume=1;synth.speak(u)}
+function playNarration(id){if(!mus)return;stopNarration();try{narr=new Audio('narration/'+id+'.mp3');narr.preload='auto';narr.onended=()=>{narr=null};narr.onerror=()=>{narr=null;fallbackSpeak(id)};narr.play().catch(()=>fallbackSpeak(id))}catch(e){fallbackSpeak(id)}}
+function narrateIntro(i){if(i>=0)playNarration((lang||'pt')+'-'+i)}
+function cancelNarration(){stopNarration()}
+function narrateWorldIntro(w){playNarration((lang||'pt')+'-w'+w)}
 function startStory(next='game'){cancelNarration();introNext=next;introI=0;introT=0;state='intro';narrateIntro(0)}
 function newStory(){prog=0;save();startGame(0)}
 function finishIntro(){cancelNarration();seen=true;if(introNext=='game'){introNext='menu';newStory()}else{state='menu';introT=0;save()}}
