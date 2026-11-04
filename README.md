@@ -20,7 +20,7 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 ## Recursos
 - 6 mundos com 4 fases cada: Árvores, Deserto, Pântano (com fases aquáticas), Céus, Gelo e Lua
 - Cada mundo tem cenário, inimigos e desafios próprios — inclusive buracos específicos e dicas temáticas
-- História de abertura ao iniciar uma **Nova história**, contando o sequestro das irmãs, com cenas animadas
+- História de abertura ao iniciar uma **Nova história**, contando o sequestro das irmãs, com cenas animadas e locução infantil feminina
 - Menu dinâmico com Cati ou Isadora, dificuldade, idioma e melhor resultado salvo
 - Idiomas: Português, Inglês e Espanhol (escolha salva no aparelho)
 - Progresso salvo no aparelho, com opção de **Continuar** do início da fase e do mundo onde parou
