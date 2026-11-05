@@ -212,7 +212,7 @@ let spT=0;
 function endSplash(){if(hashLvl!=null){if(!lang){lang='pt';applyLang()}startGame(hashLvl);return}state=lang?'menu':'lang';introI=0;introT=0;introNext='menu'}
 function chime(n){try{ac=ac||new AudioContext();if(ac.state!='running')return;(n==18?[523,784]:n==95?[659,988]:[784,1047,1319,1568]).forEach((f,i)=>setTimeout(()=>snd(f,.5,'triangle',.05),i*110))}catch(e){}}
 function splash(){const t=spT,cx=W/2,my=138,R=52,e=(a,b)=>Math.max(0,Math.min(1,(t-a)/(b-a))),eo=v=>1-Math.pow(1-v,3),fade=Math.min(e(0,30),1-e(272,300));
- const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#150b2b');g.addColorStop(1,'#3b1d63');x.fillStyle=g;x.fillRect(0,0,W,H);
+ if(pixBg.complete&&pixBg.naturalWidth>0){x.drawImage(pixBg,0,0,W,H);x.fillStyle='rgba(9,42,57,.18)';x.fillRect(0,0,W,H)} else {const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#150b2b');g.addColorStop(1,'#3b1d63');x.fillStyle=g;x.fillRect(0,0,W,H)}
  for(let i=0;i<46;i++){const sx=((i*173+Math.sin(t*.01+i)*20)%W+W)%W,sy=(i*97+t*(.4+i%5*.15))%(H+20);x.fillStyle='rgba(255,255,255,'+(.15+.5*Math.abs(Math.sin(t*.03+i)))+')';x.beginPath();x.arc(sx,sy,1+i%3*.8,0,7);x.fill()}
  const gl=x.createRadialGradient(cx,my,8,cx,my,130);gl.addColorStop(0,'rgba(140,200,255,'+.4*e(10,70)+')');gl.addColorStop(1,'rgba(140,200,255,0)');x.fillStyle=gl;x.fillRect(cx-140,my-140,280,280);
  const sc=eo(e(12,60))*(1+Math.sin(Math.PI*e(12,60))*.1);
