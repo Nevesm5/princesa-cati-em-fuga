@@ -30,7 +30,6 @@ As irmãs **Cati** e **Isadora** foram sequestradas pelo cruel **Molusco** e lev
 - Dinossauros com cores temáticas de cada mundo
 - Blocos "?" com poderes: estrelas mágicas (cada princesa tem a sua) e uma montaria que engole inimigos
 - Gemas escondidas para coletar
-- Apelo visual pixelado consistente, com cenários redesenhados em estilo retro e arte inspirada no pacote CC0 [Platformer Art Pixel](https://kenney.nl/assets/platformer-art-pixel) do Kenney
 - Aberturas curtas em cada mundo, com o cenário real e uma dica temática
 - Músicas, efeitos sonoros, pausa e controles de toque para celular
 
